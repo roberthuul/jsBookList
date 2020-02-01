@@ -42,7 +42,7 @@ function removeBook(event) {
             let books = JSON.parse(localStorage.getItem('books'));
             let book = bookID.split('pPpPp'); // juhul kui pealkirjas või autori nimes peaks olema järjest pPpPp siis ei leia õiget raamatut
             books.forEach(function(element, index) { // otsib pealkirja ja autori järgi õige raamatu
-                if(book[0] == element[0] && book[1] == element[1]) {
+                if(book[0] == element.title && book[1] == element.author) {
                     books.splice(index, 1); // eemaldab raamatu
                 }
             });
@@ -53,14 +53,17 @@ function removeBook(event) {
     }
 }
 
-function storeInLocalStorage(book, author) {
+function storeInLocalStorage(bookTitle, author) {
     let tasks;
+    let book = {title: '', author: ''};
     if(localStorage.getItem('books') === null) { // kontrollib, kas varem on salvestatud
         tasks = [];
     } else {
         tasks = JSON.parse(localStorage.getItem('books'));
     }
-    tasks.push([book, author]); // lisab uue
+    book.title = bookTitle;
+    book.author = author;
+    tasks.push(book); // lisab uue
     localStorage.setItem('books', JSON.stringify(tasks));
 }
 
@@ -71,8 +74,8 @@ function loadBooks() {
         books.forEach(element => {
             const li = document.createElement('li');
             li.className = 'collection-item';
-            li.appendChild(document.createTextNode('"' + element[0] + '" ' + element[1]));
-            li.id = element[0] + "pPpPp" + element[1]; // lisab li elemendile id, kustutamisel on vaja
+            li.appendChild(document.createTextNode('"' + element.title + '" ' + element.author));
+            li.id = element.title + "pPpPp" + element.author; // lisab li elemendile id, kustutamisel on vaja
             bookList.appendChild(li);
             const removeLink = document.createElement('a'); // lisab eemaldamise lingi
             removeLink.className = 'delete-item secondary-content';
